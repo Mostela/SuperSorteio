@@ -1,0 +1,47 @@
+#apiVersion: networking.istio.io/v1alpha3
+#kind: Gateway
+#metadata:
+#  name: sorteio-gate
+#  labels:
+#    app: price
+#  namespace: sorteio
+#spec:
+#  selector:
+#    istio: ingressgateway
+#  servers:
+#  - port:
+#      number: 80
+#      name: http
+#      protocol: HTTP
+#    hosts:
+#      - '*'
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bicheiro-vs
+  namespace: sorteio
+spec:
+  hosts:
+    - 'mostela.com'
+  http:
+    - route:
+      - destination:
+          host: bicheiro-svc
+          port:
+            number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: loteria-vs
+  namespace: sorteio
+spec:
+  hosts:
+    - 'mostela.com'
+  http:
+    - route:
+      - destination:
+          host: loteria-svc
+          port:
+            number: 80

@@ -1,0 +1,50 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: loteria-ratings
+  labels:
+    app: loteria
+    version: v1
+  namespace: sorteio
+spec:
+  host: loteria-svc
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+    connectionPool:
+      tcp:
+        maxConnections: 210
+      http:
+        http1MaxPendingRequests: 180
+        maxRequestsPerConnection: 90
+    outlierDetection:
+      consecutive5xxErrors: 10
+      interval: 5s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 90
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: bicheiro-ratings
+  labels:
+    app: bicheiro
+    version: v1
+  namespace: sorteio
+spec:
+  host: bicheiro-svc
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+    connectionPool:
+      tcp:
+        maxConnections: 80
+      http:
+        http1MaxPendingRequests: 60
+        maxRequestsPerConnection: 15
+    outlierDetection:
+      consecutive5xxErrors: 8
+      interval: 5s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 90

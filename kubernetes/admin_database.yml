@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: admindb
+    version: v1
+  namespace: sorteio
+  name: admindb
+spec:
+  containers:
+    - name: admin
+      image: adminer
+      ports:
+        - containerPort: 8080
+          name: admin-port
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: admindb-svc
+  namespace: sorteio
+  labels:
+    version: v1
+    app: admindb
+spec:
+  selector:
+    app: admindb
+    version: v1
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: admin-port

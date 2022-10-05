@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loteria
+  namespace: sorteio
+  labels:
+    app: loteria
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      version: v1
+      app: loteria
+  template:
+    metadata:
+      labels:
+        app: loteria
+        version: v1
+    spec:
+      containers:
+        - name: loteria
+          imagePullPolicy: Always
+          image: mostela/sorteioserver
+          ports:
+            - containerPort: 8000
+              name: loteria-port
+              protocol: TCP
+          env:
+            - name: REDIS_HOST
+              value: keydb
+            - name: REDIS_PORT
+              value: '6379'
+            - name: DATABASE_NAME
+              value: 'sorteio'
+            - name: DATABASE_USER
+              value: 'root'
+            - name: DATABASE_PASSWORD
+              value: 'sorteio'
+            - name: DATABASE_HOST
+              value: mysql-mariadb
+
+#          lifecycle:
+#            postStart:
+#              httpGet:
+#                port: 8000
+#                path: 'health'
+#          livenessProbe:
+#            httpGet:
+#              path: 'health'
+#              port: 8000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "5m"
+            limits:
+              memory: "128Mi"
+              cpu: "5m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loteria-svc
+  namespace: sorteio
+  labels:
+    app: loteria
+    version: v1
+spec:
+  type: LoadBalancer
+  selector:
+    app: loteria
+    version: v1
+  ports:
+    - port: 80
+      targetPort: loteria-port
