@@ -21,7 +21,7 @@ async def create_game(body: ProfileGame, response: Response):
     final_numbers = ()
     if 0 < len(body.numberList) <= 6:
         for numbers in body.numberList:
-            check_number = True if 0 < numbers < 60 else False
+            check_number = 0 < numbers < 60
             if not check_number or numbers in final_numbers:
                 response.status_code = 200
                 return {'message': 'List numbers not ok'}
